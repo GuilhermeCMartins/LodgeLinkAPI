@@ -1,15 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/domain/entities/user/user.entity';
 import { UserRepository } from 'src/domain/repositories/user/user.repository';
-import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
 export class UserService {
     constructor(
-        @InjectRepository(UserRepository)
-        private userRepository: Repository<User>,
+        private userRepository: UserRepository,
     ) { }
 
     async findUserByEmail(email: string): Promise<User | undefined> {
@@ -20,9 +18,28 @@ export class UserService {
         return await this.userRepository.findOne({ where: { id: userId } });
     }
 
-    async createUser(userData: Partial<User>): Promise<User> {
-        const newUser = this.userRepository.create(userData);
+    async createUser(userData: Partial<User>): Promise<User | null> {
+        const existingUserEmail = await this.userRepository.findOne({ where: { email: userData.email } });
+        const existingUserCpf = await this.userRepository.findOne({ where: { cpf: userData.cpf } });
+
+        if (existingUserEmail) {
+            return null;
+        }
+
+        if (existingUserCpf) {
+            return null;
+        }
+
+        const hashedPassword = await bcrypt.hash(userData.password, 10);
+
+        const newUser = this.userRepository.create({
+            ...userData,
+            password: hashedPassword,
+        });
+
         return await this.userRepository.save(newUser);
     }
 
 }
+
+

@@ -7,18 +7,17 @@ import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { SimpleReservation } from 'src/utils/interfaces/SimpleReservation.interface';
 import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
 import { ConflictException } from 'src/domain/exceptions/ConflictException';
-
-
+import { ReservationRepository } from 'src/domain/repositories/reservation/reservation.repository';
+import NewReservation from 'src/utils/interfaces/NewReservation.interface';
 
 
 @Injectable()
 export class ReservationService {
     constructor(
-        @InjectRepository(Reservation)
-        private reservationRepository: Repository<Reservation>
+        private reservationRepository: ReservationRepository
     ) { }
 
-    async createReservation(user: User, room: HotelRoom, reservationData: Partial<Reservation>): Promise<Reservation> {
+    async createReservation(user: User, room: HotelRoom, reservationData: Partial<Reservation>): Promise<NewReservation> {
         const isRoomAllocated = await this.isRoomAllocated(room, reservationData.checkIn, reservationData.checkOut);
 
         if (isRoomAllocated) {
@@ -31,21 +30,34 @@ export class ReservationService {
             room: room
         });
 
-        // Mudar o retorno
-        return this.reservationRepository.save(reservation);
+        const newReservation = await this.reservationRepository.save(reservation)
+
+        const displayReservation: NewReservation = {
+            checkIn: newReservation.checkIn,
+            checkOut: newReservation.checkOut,
+            user: {
+                id: newReservation.user.id,
+                firstName: newReservation.user.firstName,
+                lastName: newReservation.user.lastName,
+                email: newReservation.user.email,
+            },
+            room: {
+                id: newReservation.room.id,
+                name: newReservation.room.name,
+            },
+            id: newReservation.id
+        };
+
+        return displayReservation;
     }
 
-    async getReservationsByUser(userId: number): Promise<SimpleReservation[]> {
+    async getReservationsByUser(user: User): Promise<SimpleReservation[]> {
         const reservations = await this.reservationRepository.find({
             where: {
-                user: { id: userId },
+                user: { id: user.id },
             },
             relations: ['room', 'user'],
         });
-
-        if (!reservations) {
-            throw new NotFoundException('Not found any reservations for userId')
-        }
 
         const simpleReservations: SimpleReservation[] = reservations.map(reservation => ({
             id: reservation.id,
@@ -56,6 +68,10 @@ export class ReservationService {
             userId: reservation.user.id,
             username: reservation.user.firstName,
         }));
+
+        if (!simpleReservations.length) {
+            return null
+        }
 
         return simpleReservations;
     }

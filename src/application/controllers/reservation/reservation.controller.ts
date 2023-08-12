@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, HttpCode, HttpStatus, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, HttpCode, HttpStatus, Query, BadGatewayException } from '@nestjs/common';
 import { Reservation } from 'src/domain/entities/reservation/reservation.entity';
 import { ReservationService } from 'src/domain/services/reservation/Reservation.service';
 import { JwtAuthService } from 'src/domain/services/jwt/jwt.service';
@@ -9,6 +9,8 @@ import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
 import { extractAndVerifyToken } from 'src/utils/auth/auth.utils';
 import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
 import { UnauthorizedException } from 'src/domain/exceptions/UnauthorizedException';
+import { createReservationSchema } from 'src/utils/validations/reservation.validation';
+import NewReservation from 'src/utils/interfaces/NewReservation.interface';
 
 
 
@@ -23,10 +25,11 @@ export class ReservationController {
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    async createReservation(@Body() reservationPayload: any, @Req() req): Promise<Reservation> {
+    async createReservation(@Body() reservationPayload: any, @Req() req): Promise<NewReservation> {
 
         try {
             const decodedToken = extractAndVerifyToken(req, this.jwtAuthService);
+
             if (!decodedToken) {
                 throw new UnauthorizedException('Invalid or expired token.');
             }
@@ -35,17 +38,19 @@ export class ReservationController {
             const userId = decodedToken.id;
 
             const room = await this.hotelRoomService.findById(roomId);
-            if (!room) {
-                throw new BadRequestException('Invalid HotelRoom');
-            }
-
             const user = await this.userService.findUserById(userId);
-            if (!user) {
-                throw new BadRequestException('Invalid User');
+
+            const newReservation = {
+                checkIn,
+                checkOut,
+                room,
+                user
             }
 
-            if (!checkIn || !checkOut) {
-                throw new BadRequestException('Invalid checkin or checkout dates.')
+            const { error } = createReservationSchema.validate(newReservation)
+
+            if (error) {
+                throw new BadGatewayException(error.message)
             }
 
             const reservation = await this.reservationService.createReservation(user, room, { checkIn, checkOut });
@@ -63,7 +68,19 @@ export class ReservationController {
             throw new NotFoundException('User ID not provided.');
         }
 
-        return await this.reservationService.getReservationsByUser(userId);
+        const user = await this.userService.findUserById(userId);
+
+        if (!user) {
+            throw new NotFoundException('User not found')
+        }
+
+        const reservations = await this.reservationService.getReservationsByUser(user);
+
+        if (!reservations) {
+            throw new NotFoundException('Not found any reservations for this userId')
+        }
+
+        return reservations
     }
 
 }

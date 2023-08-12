@@ -22,6 +22,9 @@ export class User {
     @Column()
     role: UserRole = 2;
 
+    @Column({ unique: true })
+    cpf: string;
+
     @OneToMany(() => Reservation, reservation => reservation.user)
     reservations: Reservation[];
 }

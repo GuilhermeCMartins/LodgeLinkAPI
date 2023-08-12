@@ -1,6 +1,8 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
 import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
 import { AuthService } from 'src/domain/services/auth/auth.service';
+import { loginUserSchema } from 'src/utils/validations/user.validation';
 
 @Controller('auth')
 export class AuthController {
@@ -9,10 +11,23 @@ export class AuthController {
     @Post('login')
     @HttpCode(HttpStatus.OK)
     async login(@Body() loginData: { email: string; password: string }): Promise<{ accessToken: string }> {
-        const user = await this.authService.validateUser(loginData.email, loginData.password);
-        if (!user) {
-            throw new NotFoundException('Invalid credentials');
+        try {
+            const { error } = loginUserSchema.validate(loginData);
+
+            if (error) {
+                throw new BadRequestException(error.message)
+            }
+
+            const user = await this.authService.validateUser(loginData.email, loginData.password);
+
+            if (!user) {
+                throw new NotFoundException('Invalid credentials');
+            }
+
+            return this.authService.login(user);
+
+        } catch (error) {
+            throw error
         }
-        return this.authService.login(user);
     }
 }

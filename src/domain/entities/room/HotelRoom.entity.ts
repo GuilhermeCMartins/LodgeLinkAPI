@@ -22,6 +22,9 @@ export class HotelRoom {
     @Column()
     isAvailable: boolean;
 
+    @Column({ type: 'json', nullable: true })
+    onPromotion: { status: boolean; newPrice: number; initialDate: Date; endDate: Date };
+
     @Column({ nullable: true })
     imageURL: string;
 
