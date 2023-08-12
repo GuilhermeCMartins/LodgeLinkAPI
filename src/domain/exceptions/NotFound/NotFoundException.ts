@@ -1,4 +1,4 @@
-import { CustomHttpException } from "./CustomHttpException";
+import { CustomHttpException } from "../Base/CustomHttpException";
 import { HttpStatus } from '@nestjs/common';
 
 export class NotFoundException extends CustomHttpException {

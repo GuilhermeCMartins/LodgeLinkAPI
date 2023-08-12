@@ -11,4 +11,7 @@ export class ReservationRepository extends Repository<Reservation> {
         super(reservationRepository.target, reservationRepository.manager, reservationRepository.queryRunner)
     }
 
+    async saveReservation(reservation: Reservation): Promise<Reservation> {
+        return this.reservationRepository.save(reservation);
+    }
 }

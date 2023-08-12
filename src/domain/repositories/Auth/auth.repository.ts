@@ -1,5 +1,4 @@
 import { Repository } from 'typeorm';
-import { HotelRoom } from '../../entities/room/HotelRoom.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/domain/entities/user/user.entity';
 

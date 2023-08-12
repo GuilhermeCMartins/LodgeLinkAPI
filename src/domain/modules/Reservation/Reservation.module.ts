@@ -6,7 +6,7 @@ import { ReservationService } from 'src/domain/services/reservation/Reservation.
 import { JwtAuthModule } from '../Jwt/Jwt.module';
 import { UserModule } from '../User/User.module';
 import { HotelRoomModule } from '../HotelRoom/HotelRoom.module';
-import { ReservationRepository } from 'src/domain/repositories/reservation/reservation.repository';
+import { ReservationRepository } from 'src/domain/repositories/reservation/Reservation.repository';
 
 @Module({
     imports: [

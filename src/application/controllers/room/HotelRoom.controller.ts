@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Post, Body, Put, Delete } from '@nestjs/common';
 import { HotelRoom } from 'src/domain/entities/room/HotelRoom.entity';
-import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
-import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
+import { BadRequestException } from 'src/domain/exceptions/BadRequest/BadRequestException';
+import { NotFoundException } from 'src/domain/exceptions/NotFound/NotFoundException';
 import { HotelRoomService } from 'src/domain/services/room/HotelRoom.service';
 import { createHotelRoomSchema } from 'src/utils/validations/hotelroom.validation';
 

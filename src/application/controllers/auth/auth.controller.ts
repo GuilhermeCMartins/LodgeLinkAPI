@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
-import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
+import { BadRequestException } from 'src/domain/exceptions/BadRequest/BadRequestException';
+import { NotFoundException } from 'src/domain/exceptions/NotFound/NotFoundException';
 import { AuthService } from 'src/domain/services/auth/auth.service';
 import { loginUserSchema } from 'src/utils/validations/user.validation';
 

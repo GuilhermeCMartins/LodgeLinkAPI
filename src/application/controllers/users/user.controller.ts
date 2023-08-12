@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { User } from 'src/domain/entities/user/user.entity';
-import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
+import { BadRequestException } from 'src/domain/exceptions/BadRequest/BadRequestException';
 import { UserService } from 'src/domain/services/user/user.service';
 import { createUserSchema } from 'src/utils/validations/user.validation';
 

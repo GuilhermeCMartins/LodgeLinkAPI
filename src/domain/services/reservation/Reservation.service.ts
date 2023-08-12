@@ -5,9 +5,9 @@ import { HotelRoom } from 'src/domain/entities/room/HotelRoom.entity';
 import { User } from 'src/domain/entities/user/user.entity';
 import { LessThanOrEqual, MoreThanOrEqual, Repository } from 'typeorm';
 import { SimpleReservation } from 'src/utils/interfaces/SimpleReservation.interface';
-import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
-import { ConflictException } from 'src/domain/exceptions/ConflictException';
-import { ReservationRepository } from 'src/domain/repositories/reservation/reservation.repository';
+import { NotFoundException } from 'src/domain/exceptions/NotFound/NotFoundException';
+import { ConflictException } from 'src/domain/exceptions/Conflict/ConflictException';
+import { ReservationRepository } from 'src/domain/repositories/reservation/Reservation.repository';
 import NewReservation from 'src/utils/interfaces/NewReservation.interface';
 
 

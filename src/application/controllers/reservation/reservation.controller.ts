@@ -1,14 +1,13 @@
 import { Body, Controller, Get, Post, Req, HttpCode, HttpStatus, Query, BadGatewayException } from '@nestjs/common';
-import { Reservation } from 'src/domain/entities/reservation/reservation.entity';
 import { ReservationService } from 'src/domain/services/reservation/Reservation.service';
 import { JwtAuthService } from 'src/domain/services/jwt/jwt.service';
 import { UserService } from 'src/domain/services/user/user.service';
 import { HotelRoomService } from 'src/domain/services/room/HotelRoom.service';
 import { SimpleReservation } from 'src/utils/interfaces/SimpleReservation.interface';
-import { BadRequestException } from 'src/domain/exceptions/BadRequestException';
+import { BadRequestException } from 'src/domain/exceptions/BadRequest/BadRequestException';
 import { extractAndVerifyToken } from 'src/utils/auth/auth.utils';
-import { NotFoundException } from 'src/domain/exceptions/NotFoundException';
-import { UnauthorizedException } from 'src/domain/exceptions/UnauthorizedException';
+import { NotFoundException } from 'src/domain/exceptions/NotFound/NotFoundException';
+import { UnauthorizedException } from 'src/domain/exceptions/Unauthorized/UnauthorizedException';
 import { createReservationSchema } from 'src/utils/validations/reservation.validation';
 import NewReservation from 'src/utils/interfaces/NewReservation.interface';
 
