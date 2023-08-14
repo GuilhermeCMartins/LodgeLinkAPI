@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Logger } from '@nestjs/common/services';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Reservation } from 'src/domain/entities/reservation/reservation.entity';
 import { HotelRoom } from 'src/domain/entities/room/HotelRoom.entity';
+import { ReservationRepository } from 'src/domain/repositories/reservation/Reservation.repository';
 import { HotelRoomRepository } from 'src/domain/repositories/room/HotelRoom.repository';
 
 
@@ -10,6 +9,7 @@ import { HotelRoomRepository } from 'src/domain/repositories/room/HotelRoom.repo
 export class HotelRoomService {
     constructor(
         private readonly hotelRoomRepository: HotelRoomRepository,
+        private readonly reservationRepository: ReservationRepository,
     ) {
     }
 
@@ -61,6 +61,6 @@ export class HotelRoomService {
         room.isAvailable = false;
 
         await this.hotelRoomRepository.save(room);
-        return this.hotelRoomRepository.saveReservation(reservation);
+        return this.reservationRepository.saveReservation(reservation);
     }
 }

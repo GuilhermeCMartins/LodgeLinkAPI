@@ -1,4 +1,3 @@
-import { createMockHotelRoom, createMockUser } from 'src/utils/test/mockData';
 import { HotelRoom } from './HotelRoom.entity';
 
 

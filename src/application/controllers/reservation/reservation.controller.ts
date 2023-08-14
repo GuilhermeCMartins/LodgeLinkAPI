@@ -1,15 +1,15 @@
-import { Body, Controller, Get, Post, Req, HttpCode, HttpStatus, Query, BadGatewayException } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { ReservationService } from 'src/domain/services/reservation/Reservation.service';
 import { JwtAuthService } from 'src/domain/services/jwt/jwt.service';
 import { UserService } from 'src/domain/services/user/user.service';
 import { HotelRoomService } from 'src/domain/services/room/HotelRoom.service';
 import { SimpleReservation } from 'src/utils/interfaces/SimpleReservation.interface';
-import { BadRequestException } from 'src/domain/exceptions/BadRequest/BadRequestException';
 import { extractAndVerifyToken } from 'src/utils/auth/auth.utils';
 import { NotFoundException } from 'src/domain/exceptions/NotFound/NotFoundException';
 import { UnauthorizedException } from 'src/domain/exceptions/Unauthorized/UnauthorizedException';
 import { createReservationSchema } from 'src/utils/validations/reservation.validation';
 import NewReservation from 'src/utils/interfaces/NewReservation.interface';
+import { ConflictException } from 'src/domain/exceptions/Conflict/ConflictException';
 
 
 
@@ -49,7 +49,7 @@ export class ReservationController {
             const { error } = createReservationSchema.validate(newReservation)
 
             if (error) {
-                throw new BadGatewayException(error.message)
+                throw new ConflictException(error.message)
             }
 
             const reservation = await this.reservationService.createReservation(user, room, { checkIn, checkOut });

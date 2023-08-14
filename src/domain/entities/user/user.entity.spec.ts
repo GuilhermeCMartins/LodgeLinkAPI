@@ -1,4 +1,4 @@
-import { createMockUser } from 'src/utils/test/mockData';
+import { createMockUser } from 'src/utils/mockData';
 import { User } from './user.entity';
 import { UserRole } from 'src/domain/enums/user-role.enum';
 
